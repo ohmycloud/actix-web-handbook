@@ -54,11 +54,13 @@ async fn inspect_request(req: HttpRequest) -> HttpResponse {
     let method = req.method();
     let path = req.path();
     let headers = req.headers();
+    let query = req.query_string();
 
     // Log request information
     println!("Method: {}", method);
     println!("Path: {}", path);
     println!("Headers: {:?}", headers);
+    println!("Query: {:?}", query);
 
     // Return empty response
     HttpResponse::Ok().finish()
