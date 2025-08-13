@@ -1,14 +1,19 @@
-use actix_web::error::ErrorUnauthorized;
-
-use actix_web::{App, HttpResponse, HttpServer, ResponseError, Result, get};
+use actix_web::{App, HttpResponse, HttpServer, ResponseError, Result, web};
 use derive_more::Display;
+use serde::{Deserialize, Serialize};
 
-#[get("/login")]
-async fn login(username: String, password: String) -> Result<HttpResponse> {
-    if username == "admin" && password == "password" {
+#[derive(Serialize, Deserialize)]
+struct LoginParams {
+    username: String,
+    password: String,
+}
+
+// #[get("/login")]
+async fn login(params: web::Query<LoginParams>) -> Result<HttpResponse, AppError> {
+    if params.username == "admin" && params.password == "password" {
         Ok(HttpResponse::Ok().body("Logged in"))
     } else {
-        Err(ErrorUnauthorized("Invalid credentials"))
+        Err(AppError::InvalidCredentials)
     }
 }
 
@@ -29,13 +34,16 @@ impl ResponseError for AppError {
             AppError::NotFound(id) => {
                 HttpResponse::NotFound().body(format!("User {} not found", id))
             }
+            AppError::InvalidCredentials => {
+                HttpResponse::Unauthorized().body("Invalid credentials")
+            }
         }
     }
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(login))
+    HttpServer::new(|| App::new().route("/login", web::get().to(login)))
         .bind(("127.0.0.1", 8080))?
         .run()
         .await
@@ -46,9 +54,9 @@ async fn test_login_failure() {
     use actix_web::http::StatusCode;
     use actix_web::test;
 
-    let app = test::init_service(App::new().service(login)).await;
+    let app = test::init_service(App::new().route("/login", web::get().to(login))).await;
     let req = test::TestRequest::get()
-        .uri("/login?username=wrong&passoword=wrong")
+        .uri("/login?username=wrong&password=wrong")
         .to_request();
     let resp = test::call_service(&app, req).await;
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
