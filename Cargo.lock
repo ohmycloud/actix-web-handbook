@@ -190,6 +190,7 @@ name = "actix-web-handbook"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "derive_more",
  "env_logger",
  "serde",
  "serde_json",
