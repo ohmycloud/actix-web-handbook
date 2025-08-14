@@ -1,0 +1,139 @@
+html,
+body {
+    font-family: "Open Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 14px;
+}
+#everything {
+    display: block;
+    margin: 0 auto;
+    margin-top: 14px;
+}
+#nav {
+    font-family: "Roboto Mono", monospace;
+    padding: 25px;
+}
+#content {
+    padding: 25px;
+}
+#github {
+    text-align: center;
+    font-size: 13px;
+}
+#github a {
+    margin-top: 6px;
+    color: black;
+}
+#github img {
+    margin-left: 8px;
+    margin-bottom: 2px;
+    width: 16px;
+    vertical-align: middle;
+}
+@media (min-width: 1000px) {
+    /* DESKTOP */
+    #everything {
+        font-size: 14px;
+        max-width: 1200px;
+        min-width: 520px;
+    }
+    #nav {
+        width: 13%;
+        float: left;
+    }
+    #content {
+        border-left: 1px solid #666;
+        width: 75%;
+        float: right;
+    }
+    #title img {
+        width: 32px;
+    }
+    #title {
+        font-size: 24px;
+    }
+}
+@media (max-width: 999px) {
+    /* MOBILE */
+    #everything {
+        font-size: 1em;
+        width: 100%;
+    }
+    #nav {
+        text-align: center;
+        font-size: 1em;
+        border-bottom: 2px solid #666;
+        float: none;
+    }
+    #nav ul {
+        padding-left: 0;
+    }
+    #nav li {
+        margin-bottom: 5px;
+    }
+    #content {
+        border: none;
+        float: none;
+    }
+    #content pre {
+        font-size: 1em;
+        display: block;
+        margin: 0 auto;
+    }
+    #title {
+        font-size: 2em;
+    }
+    #title img {
+        width: 48px;
+    }
+    #github {
+        display: none;
+    }
+}
+@media (max-width: 750px) {
+    #title {
+        font-size: 1.8em;
+    }
+}
+a {
+    color: blue;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+#nav ul {
+    list-style-type: none;
+}
+#nav li {
+    padding: 5px;
+}
+pre {
+    font-family: "Roboto Mono", monospace;
+    padding-left: 10px;
+    text-decoration: none;
+    font-size: 13px;
+}
+.Comment {
+    color: #888;
+    font-weight: normal;
+}
+#title {
+    text-align: center;
+}
+#title a {
+    color: black;
+}
+#title a:hover {
+    text-decoration: none;
+}
+#title img {
+    vertical-align: middle;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+p {
+    text-indent: 20px;
+    line-height: 2.5;
+}
