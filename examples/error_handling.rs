@@ -17,6 +17,7 @@ async fn login(params: web::Query<LoginParams>) -> Result<HttpResponse, AppError
     }
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Display)]
 enum AppError {
     #[display("Database unavailable")]
