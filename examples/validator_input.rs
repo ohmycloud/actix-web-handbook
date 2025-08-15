@@ -11,6 +11,8 @@ struct NewUser {
     email: String,
     #[validate(length(min = 8), custom(function = "validate_password_strength"))]
     password: String,
+    #[validate(must_match(other = "password"))]
+    password_confirmation: String,
 }
 
 fn validate_password_strength(password: &str) -> Result<(), ValidationError> {
