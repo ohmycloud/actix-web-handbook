@@ -1,7 +1,7 @@
 use actix_web::{App, Error, HttpResponse, HttpServer, post};
 use actix_web_validator::Json;
 use serde::Deserialize;
-use validator::Validate;
+use validator::{Validate, ValidationError};
 
 #[derive(Debug, Validate, Deserialize)]
 struct NewUser {
@@ -9,8 +9,19 @@ struct NewUser {
     username: String,
     #[validate(email)]
     email: String,
-    #[validate(length(min = 8))]
+    #[validate(length(min = 8), custom(function = "validate_password_strength"))]
     password: String,
+}
+
+fn validate_password_strength(password: &str) -> Result<(), ValidationError> {
+    let has_upper = password.chars().any(char::is_uppercase);
+    let has_lower = password.chars().any(char::is_lowercase);
+    let has_digit = password.chars().any(char::is_numeric);
+
+    if !(has_upper && has_lower && has_digit) {
+        return Err(ValidationError::new("password is too weak!"));
+    }
+    Ok(())
 }
 
 #[post("/register")]
