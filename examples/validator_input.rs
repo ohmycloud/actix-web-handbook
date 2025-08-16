@@ -1,4 +1,4 @@
-use actix_web::{App, Error, HttpResponse, HttpServer, post};
+use actix_web::{App, Error, HttpResponse, HttpServer, post, web};
 use actix_web_validator::Json;
 use serde::Deserialize;
 use validator::{Validate, ValidationError};
@@ -36,8 +36,17 @@ async fn register(user: Json<NewUser>) -> Result<HttpResponse, Error> {
 async fn main() -> std::io::Result<()> {
     let addr = "127.0.0.1:8080";
     println!("Listening on: http://{}", addr);
-    HttpServer::new(|| App::new().service(register))
-        .bind(addr)?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .wrap(actix_web::middleware::Condition::new(
+                true, // Enable in production
+                actix_web::middleware::DefaultHeaders::new()
+                    .add(("Content-Type", "application/json")),
+            ))
+            .app_data(web::JsonConfig::default().limit(4096)) // 4kb payload limit
+            .service(register)
+    })
+    .bind(addr)?
+    .run()
+    .await
 }
