@@ -10,9 +10,11 @@ use std::{
 use actix_web::{
     App, Error, HttpServer,
     dev::{Service, ServiceRequest, ServiceResponse, Transform},
+    http::header::HeaderName,
     middleware::Logger,
     web,
 };
+use uuid::Uuid;
 
 pub struct TimingMiddleware;
 
@@ -86,7 +88,15 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
         App::new()
-            .wrap(Logger::new("%a %{User-Agent}i %r %s %b")) // adds logging middleware
+            .wrap_fn(|mut req, srv| {
+                let request_id = Uuid::new_v4().to_string();
+                req.headers_mut().insert(
+                    HeaderName::from_static("x-request-id"),
+                    request_id.parse().unwrap(),
+                );
+                srv.call(req)
+            })
+            .wrap(Logger::new("%a %{User-Agent}i %r %s %b %{x-request-id}i")) // adds logging middleware
             .wrap(TimingMiddleware) // custom middleware
             .route("/", web::get().to(|| async { "Hello, Timed" }))
     })
