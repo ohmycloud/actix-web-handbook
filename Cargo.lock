@@ -217,6 +217,7 @@ dependencies = [
  "actix-web-validator",
  "derive_more 2.0.1",
  "env_logger",
+ "log",
  "serde",
  "serde_json",
  "tokio",
