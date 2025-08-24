@@ -1,5 +1,7 @@
 use std::{
+    env,
     future::{Future, Ready, ready},
+    io::Write,
     pin::Pin,
     task::{Context, Poll},
     time::Duration,
@@ -64,9 +66,23 @@ where
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    env_logger::init();
-
     println!("Serving on http://127.0.0.1:8080");
+
+    env_logger::builder()
+        .format(|buf, record| {
+            writeln!(
+                buf,
+                "{}",
+                serde_json::json!({
+                    "time": chrono::Utc::now().to_rfc3339(),
+                    "level": record.level().as_str(),
+                    "message": record.args().to_string(),
+                    "module": record.module_path().unwrap_or_default()
+                })
+            )
+        })
+        .parse_env(env::var("RUST_LOG").unwrap_or_else(|_| "info".into()))
+        .init();
 
     HttpServer::new(|| {
         App::new()
