@@ -64,14 +64,13 @@ where
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    unsafe {
-        std::env::set_var("RUST_LOG", "info");
-    }
     env_logger::init();
+
+    println!("Serving on http://127.0.0.1:8080");
 
     HttpServer::new(|| {
         App::new()
-            .wrap(Logger::default()) // adds logging middleware
+            .wrap(Logger::new("%a %{User-Agent}i %r %s %b")) // adds logging middleware
             .wrap(TimingMiddleware) // custom middleware
             .route("/", web::get().to(|| async { "Hello, Timed" }))
     })
