@@ -31,6 +31,7 @@ async fn app_config_check(config: web::Data<Arc<AppConfig>>) -> impl Responder {
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    // Load environment variables from .env file
     dotenv::dotenv().ok();
 
     let config = Arc::new(AppConfig::from_env().expect("Failed to load configuration"));
