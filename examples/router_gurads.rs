@@ -17,12 +17,33 @@ async fn secure_endpoint() -> HttpResponse {
     HttpResponse::Ok().body("Authorized")
 }
 
+async fn get_users() -> HttpResponse {
+    HttpResponse::Ok().body("User list")
+}
+
+async fn create_user() -> HttpResponse {
+    HttpResponse::Ok().body("User created")
+}
+
+async fn admin() -> HttpResponse {
+    HttpResponse::Ok().body("Admin endpoint")
+}
+
+async fn dashboard() -> HttpResponse {
+    HttpResponse::Ok().body("Dashboard endpoint")
+}
+
+async fn reports() -> HttpResponse {
+    HttpResponse::Ok().body("Reports endpoint")
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
-        App::new().route(
-            "/secure",
-            web::route().guard(ApiKeyGuard).to(secure_endpoint),
+        App::new().service(
+            web::scope("/users") // Group routes under /users
+                .route("", web::get().to(get_users)) // Matches /users
+                .route("", web::post().to(create_user)), // Matches /users
         )
     })
     .bind("127.0.0.1:8080")?
