@@ -39,12 +39,21 @@ async fn reports() -> HttpResponse {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new().service(
-            web::scope("/users") // Group routes under /users
-                .route("", web::get().to(get_users)) // Matches /users
-                .route("", web::post().to(create_user)), // Matches /users
-        )
+    HttpServer::new(move || {
+        App::new()
+            // Group routes under /users
+            .service(
+                web::scope("/users")
+                    .route("", web::get().to(get_users)) // Matches /users
+                    .route("", web::post().to(create_user)), // Matches /users
+            )
+            // Admin routes guarded by ApiKeyGuard
+            .service(
+                web::scope("/admin")
+                    .guard(ApiKeyGuard)
+                    .route("/dashboard", web::get().to(dashboard))
+                    .route("/reports", web::get().to(reports)),
+            )
     })
     .bind("127.0.0.1:8080")?
     .run()
